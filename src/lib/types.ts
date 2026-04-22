@@ -25,6 +25,17 @@ export type Lead = {
   contact_email: string
   last_contact: string | null
   website_url: string | null
+  email: string | null
+  owner_name: string | null
+  company_type: string | null
+  identification_code: string | null
+  facebook: string | null
+  instagram: string | null
+  tiktok: string | null
+  google_maps_url: string | null
+  google_rating: number | null
+  google_reviews_count: number | null
+  enriched_at: string | null
   created_at: string
   updated_at: string
   profiles?: Profile

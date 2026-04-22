@@ -235,6 +235,56 @@ export function LeadSidebar({
             </div>
           </div>
 
+          {/* Social & Enrichment */}
+          {(lead.facebook || lead.instagram || lead.tiktok || lead.email || lead.owner_name || lead.google_rating) && (
+            <div className="px-5 py-4 border-b border-border space-y-3">
+              <h3 className="text-[12px] font-medium text-muted uppercase tracking-wider">Enriched Data</h3>
+              <div className="grid grid-cols-[100px_1fr] gap-y-2.5 text-[13px]">
+                {lead.owner_name && (
+                  <><span className="text-muted">Owner</span><span className="text-text">{lead.owner_name}</span></>
+                )}
+                {lead.email && (
+                  <><span className="text-muted">Email</span><a href={`mailto:${lead.email}`} className="text-accent hover:underline">{lead.email}</a></>
+                )}
+                {lead.company_type && (
+                  <><span className="text-muted">Company</span><span className="text-text">{lead.company_type}{lead.identification_code ? ` (${lead.identification_code})` : ''}</span></>
+                )}
+                {lead.google_rating && (
+                  <><span className="text-muted">Rating</span><span className="text-text">{lead.google_rating} ({lead.google_reviews_count || 0} reviews)</span></>
+                )}
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {lead.facebook && (
+                  <a href={lead.facebook} target="_blank" rel="noopener noreferrer"
+                    className="px-3 py-1.5 rounded bg-[#1877F2]/10 border border-[#1877F2]/20 text-[12px] text-[#1877F2] hover:bg-[#1877F2]/20 transition-colors">
+                    Facebook
+                  </a>
+                )}
+                {lead.instagram && (
+                  <a href={lead.instagram} target="_blank" rel="noopener noreferrer"
+                    className="px-3 py-1.5 rounded bg-[#E4405F]/10 border border-[#E4405F]/20 text-[12px] text-[#E4405F] hover:bg-[#E4405F]/20 transition-colors">
+                    Instagram
+                  </a>
+                )}
+                {lead.tiktok && (
+                  <a href={lead.tiktok} target="_blank" rel="noopener noreferrer"
+                    className="px-3 py-1.5 rounded bg-white/5 border border-white/10 text-[12px] text-text hover:bg-white/10 transition-colors">
+                    TikTok
+                  </a>
+                )}
+                {lead.google_maps_url && (
+                  <a href={lead.google_maps_url} target="_blank" rel="noopener noreferrer"
+                    className="px-3 py-1.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[12px] text-emerald-400 hover:bg-emerald-500/20 transition-colors">
+                    Maps
+                  </a>
+                )}
+              </div>
+              {lead.enriched_at && (
+                <p className="text-[10px] text-muted/40">Enriched {formatDate(lead.enriched_at)}</p>
+              )}
+            </div>
+          )}
+
           {/* Pipeline fields */}
           <div className="px-5 py-4 border-b border-border space-y-3">
             <h3 className="text-[12px] font-medium text-muted uppercase tracking-wider">Pipeline</h3>
