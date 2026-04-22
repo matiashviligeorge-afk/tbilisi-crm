@@ -8,7 +8,6 @@ import type { Profile } from '@/lib/types'
 
 const navItems = [
   { href: '/leads', label: 'Leads', icon: LeadsIcon },
-  { href: '/pipeline', label: 'Pipeline', icon: PipelineIcon },
   { href: '/dashboard', label: 'Dashboard', icon: DashboardIcon },
   { href: '/team', label: 'Team', icon: TeamIcon },
 ]
@@ -81,16 +80,6 @@ function LeadsIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M2 4h12M2 8h12M2 12h8" />
-    </svg>
-  )
-}
-
-function PipelineIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="1" y="2" width="4" height="12" rx="1" />
-      <rect x="6" y="4" width="4" height="10" rx="1" />
-      <rect x="11" y="6" width="4" height="8" rx="1" />
     </svg>
   )
 }

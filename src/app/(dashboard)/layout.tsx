@@ -20,11 +20,6 @@ export default async function DashboardLayout({
     .eq('id', user.id)
     .single()
 
-  const { data: teamProfiles } = await supabase
-    .from('profiles')
-    .select('id, full_name, email, avatar_url')
-    .order('full_name')
-
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar profile={profile} />

@@ -2,16 +2,19 @@ import { createClient } from '@/lib/supabase/server'
 import { Lead, ActivityLog, Profile } from '@/lib/types'
 import DashboardClient from '@/components/DashboardClient'
 
+export const dynamic = 'force-dynamic'
+
 export default async function DashboardPage() {
   const supabase = await createClient()
 
+  // Fetch only needed columns, no joins
   const { data: leads } = await supabase
     .from('leads')
-    .select('*, profiles(*)')
+    .select('id, category, district, status, priority, assigned_to, created_at')
 
   const { data: activityLogs } = await supabase
     .from('activity_log')
-    .select('*, profiles(*)')
+    .select('*, profiles(full_name)')
     .order('created_at', { ascending: false })
     .limit(20)
 
@@ -21,7 +24,7 @@ export default async function DashboardPage() {
 
   const { data: profiles } = await supabase
     .from('profiles')
-    .select('*')
+    .select('id, full_name, email, role')
 
   return (
     <div className="min-h-screen bg-[#111] p-6">
