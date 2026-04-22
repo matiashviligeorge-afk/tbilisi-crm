@@ -47,6 +47,8 @@ export function LeadsClient({ leads, categories, districts, teamProfiles, curren
   const [checked, setChecked] = useState<Set<number>>(new Set())
   const [activeLead, setActiveLead] = useState<Lead | null>(null)
   const [updatingStatus, setUpdatingStatus] = useState<number | null>(null)
+  const [page, setPage] = useState(0)
+  const PAGE_SIZE = 50
 
   // Stats
   const stats = useMemo(() => {
@@ -58,6 +60,7 @@ export function LeadsClient({ leads, categories, districts, teamProfiles, curren
 
   // Filtered leads
   const filtered = useMemo(() => {
+    setPage(0)
     return leads.filter(lead => {
       if (statusFilter && lead.status !== statusFilter) return false
       if (selectedCategories.size > 0 && !selectedCategories.has(lead.category)) return false
@@ -76,6 +79,10 @@ export function LeadsClient({ leads, categories, districts, teamProfiles, curren
       return true
     })
   }, [leads, statusFilter, selectedCategories, selectedDistricts, search])
+
+  // Paginated slice
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
+  const paged = useMemo(() => filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE), [filtered, page])
 
   // Active lead index in filtered list
   const activeIndex = activeLead ? filtered.findIndex(l => l.id === activeLead.id) : -1
@@ -322,7 +329,7 @@ export function LeadsClient({ leads, categories, districts, teamProfiles, curren
             </tr>
           </thead>
           <tbody>
-            {filtered.map((lead, idx) => (
+            {paged.map((lead, idx) => (
               <tr
                 key={lead.id}
                 onClick={() => setActiveLead(lead)}
@@ -340,7 +347,7 @@ export function LeadsClient({ leads, categories, districts, teamProfiles, curren
                     className="accent-accent cursor-pointer"
                   />
                 </td>
-                <td className="px-3 py-2.5 text-muted tabular-nums">{idx + 1}</td>
+                <td className="px-3 py-2.5 text-muted tabular-nums">{page * PAGE_SIZE + idx + 1}</td>
                 <td className="px-3 py-2.5 font-medium text-text max-w-[200px] truncate">{lead.name}</td>
                 <td className="px-3 py-2.5 text-muted">{lead.category}</td>
                 <td className="px-3 py-2.5 text-muted">{lead.district}</td>
@@ -385,9 +392,67 @@ export function LeadsClient({ leads, categories, districts, teamProfiles, curren
           </div>
         )}
 
+        {/* Pagination */}
         {filtered.length > 0 && (
-          <div className="mt-3 text-[12px] text-muted">
-            Showing {filtered.length} of {leads.length} leads
+          <div className="mt-4 flex items-center justify-between">
+            <span className="text-[12px] text-muted">
+              {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, filtered.length)} of {filtered.length} leads
+            </span>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setPage(0)}
+                disabled={page === 0}
+                className="px-2 py-1 rounded text-[11px] border border-border bg-surface text-muted hover:text-text disabled:opacity-30 disabled:cursor-default cursor-pointer"
+              >
+                First
+              </button>
+              <button
+                onClick={() => setPage(p => Math.max(0, p - 1))}
+                disabled={page === 0}
+                className="px-2.5 py-1 rounded text-[11px] border border-border bg-surface text-muted hover:text-text disabled:opacity-30 disabled:cursor-default cursor-pointer"
+              >
+                Prev
+              </button>
+              {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                let pageNum: number
+                if (totalPages <= 7) {
+                  pageNum = i
+                } else if (page < 3) {
+                  pageNum = i
+                } else if (page > totalPages - 4) {
+                  pageNum = totalPages - 7 + i
+                } else {
+                  pageNum = page - 3 + i
+                }
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => setPage(pageNum)}
+                    className={`w-7 h-7 rounded text-[11px] border cursor-pointer ${
+                      page === pageNum
+                        ? 'bg-accent border-accent text-white'
+                        : 'border-border bg-surface text-muted hover:text-text'
+                    }`}
+                  >
+                    {pageNum + 1}
+                  </button>
+                )
+              })}
+              <button
+                onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+                disabled={page >= totalPages - 1}
+                className="px-2.5 py-1 rounded text-[11px] border border-border bg-surface text-muted hover:text-text disabled:opacity-30 disabled:cursor-default cursor-pointer"
+              >
+                Next
+              </button>
+              <button
+                onClick={() => setPage(totalPages - 1)}
+                disabled={page >= totalPages - 1}
+                className="px-2 py-1 rounded text-[11px] border border-border bg-surface text-muted hover:text-text disabled:opacity-30 disabled:cursor-default cursor-pointer"
+              >
+                Last
+              </button>
+            </div>
           </div>
         )}
       </div>
